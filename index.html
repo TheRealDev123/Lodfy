@@ -1,736 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lodfy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:      #08080e;
-  --surf:    #110f1e;
-  --surf2:   #1a1730;
-  --border:  #272442;
-  --text:    #e8e4ff;
-  --muted:   #6b6590;
-  --dim:     #3d3860;
-  --accent:  #7c6af7;
-  --accent2: #a78bfa;
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top,0px);
-  padding-bottom: env(safe-area-inset-bottom,0px);
-}
-*, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lodfy</title>
+    <style>
+      :root {
+        --bg: #0b0d12;
+        --panel: #121821;
+        --panel-2: #1a2330;
+        --border: #2a3747;
+        --text: #edf2ff;
+        --muted: #aab7c8;
+        --accent: #1db954;
+        --accent-2: #4cd684;
+        --danger: #ff7a7a;
+      }
 
-/* ── HOME ────────────────────────────────────────── */
-#page-home { display: block; }
-#page-view { display: none; }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, var(--bg), #0f1219 100%);
+        color: var(--text);
+      }
 
-.home-wrap {
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 2rem 1.5rem;
-  position: relative;
-}
-.home-glow {
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(124,106,247,0.1) 0%, transparent 70%);
-}
-.home-inner {
-  position: relative; z-index: 1;
-  width: 100%; max-width: 480px;
-  text-align: center;
-}
-.home-logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800; font-size: 2rem;
-  letter-spacing: -0.04em;
-  color: var(--accent2);
-  margin-bottom: 0.2rem;
-}
-.home-logo sup {
-  font-size: 0.42em; font-weight: 400;
-  color: var(--muted); vertical-align: super;
-  letter-spacing: 0; font-family: 'DM Sans', sans-serif;
-}
-.home-tagline {
-  font-size: 0.85rem; color: var(--muted);
-  font-weight: 300; margin-bottom: 3rem; font-style: italic;
-}
-.paste-zone {
-  background: var(--surf);
-  border: 1px solid var(--border);
-  border-radius: 16px; padding: 1.75rem;
-  text-align: left;
-  transition: border-color 0.2s;
-}
-.paste-zone:focus-within { border-color: var(--accent); }
-.paste-label {
-  font-size: 0.78rem; font-weight: 500;
-  color: var(--muted); margin-bottom: 0.75rem;
-}
-.paste-row { display: flex; gap: 0.5rem; }
-.paste-input {
-  flex: 1; min-width: 0;
-  background: var(--bg);
-  border: 1px solid var(--border); border-radius: 8px;
-  padding: 0.7rem 0.9rem;
-  font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
-  color: var(--text); outline: none;
-  transition: border-color 0.2s;
-}
-.paste-input::placeholder { color: var(--dim); }
-.paste-input:focus { border-color: var(--accent); }
-.view-btn {
-  background: var(--accent); color: #fff; border: none;
-  border-radius: 8px; padding: 0.7rem 1.2rem;
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 0.88rem; cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
-  letter-spacing: -0.01em;
-}
-.view-btn:hover { background: var(--accent2); }
-.view-btn:active { transform: scale(0.96); }
-.paste-hint { font-size: 0.74rem; color: var(--dim); margin-top: 0.85rem; line-height: 1.5; }
-.err { font-size: 0.78rem; color: #f87171; margin-top: 0.5rem; display: none; }
-.err.on { display: block; }
+      body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
 
-/* ── VIEW PAGE ───────────────────────────────────── */
-.art-backdrop {
-  position: fixed; inset: 0; z-index: 0;
-  background-size: cover; background-position: center;
-  filter: blur(90px) saturate(1.3);
-  opacity: 0.15; transform: scale(1.1);
-  transition: background-image 0.6s; pointer-events: none;
-}
-.view-scroll { position: relative; z-index: 1; min-height: 100vh; }
+      .card {
+        width: min(720px, 100%);
+        background: rgba(18, 24, 33, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: 0 22px 60px rgba(0,0,0,0.35);
+        padding: 28px;
+      }
 
-/* Topbar */
-.topbar {
-  position: sticky; top: 0; z-index: 20;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem; height: 52px;
-  background: rgba(8,8,14,0.75);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-.tbar-logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800; font-size: 1rem;
-  letter-spacing: -0.03em; color: var(--accent2);
-}
-.tbar-back {
-  background: none; border: 1px solid var(--border);
-  color: var(--muted); font-family: 'DM Sans', sans-serif;
-  font-size: 0.8rem; padding: 0.3rem 0.8rem;
-  border-radius: 20px; cursor: pointer;
-  display: flex; align-items: center; gap: 0.3rem;
-  transition: color 0.15s, border-color 0.15s;
-}
-.tbar-back:hover { color: var(--text); border-color: var(--muted); }
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 5vw, 2.7rem);
+      }
 
-/* Hero */
-.pv-hero {
-  padding: 3rem 2.5rem 2rem;
-  display: flex; gap: 2.5rem; align-items: flex-end;
-  max-width: 960px;
-}
-.pv-art {
-  width: 200px; height: 200px; border-radius: 6px;
-  object-fit: cover; display: block; flex-shrink: 0;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5);
-}
-.pv-art-placeholder {
-  width: 200px; height: 200px; border-radius: 6px; flex-shrink: 0;
-  background: var(--surf2); display: flex; align-items: center; justify-content: center;
-  color: var(--dim);
-}
-.pv-info { flex: 1; min-width: 0; }
-.pv-kind { font-size: 0.72rem; font-weight: 500; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-.pv-title {
-  font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  line-height: 1.05; letter-spacing: -0.03em;
-  margin-bottom: 0.75rem; word-break: break-word;
-}
-.pv-by { font-size: 0.85rem; color: var(--muted); font-weight: 300; margin-bottom: 0.4rem; }
-.pv-desc { font-size: 0.82rem; color: var(--dim); font-weight: 300; margin-bottom: 1.5rem; font-style: italic; max-width: 40ch; line-height: 1.5; }
-.pv-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+      p {
+        color: var(--muted);
+        margin: 0 0 18px;
+      }
 
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  background: var(--accent); color: #fff; border: none;
-  border-radius: 6px; padding: 0.6rem 1.2rem;
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 0.88rem; cursor: pointer; text-decoration: none;
-  transition: background 0.15s, transform 0.1s; letter-spacing: -0.01em;
-}
-.btn-primary:hover { background: var(--accent2); }
-.btn-primary:active { transform: scale(0.96); }
-.btn-ghost {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  background: none; border: 1px solid var(--border);
-  color: var(--muted); border-radius: 6px; padding: 0.6rem 1rem;
-  font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
-  cursor: pointer; text-decoration: none;
-  transition: color 0.15s, border-color 0.15s;
-}
-.btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+      form {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
 
-/* Stats row */
-.pv-stats {
-  display: flex; gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-.pv-stat {
-  display: flex; flex-direction: column; gap: 0.15rem;
-}
-.pv-stat-val {
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 1.1rem; color: var(--text);
-}
-.pv-stat-label { font-size: 0.72rem; color: var(--muted); font-weight: 300; }
+      input {
+        flex: 1 1 320px;
+        min-width: 0;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #0d131b;
+        color: var(--text);
+        font-size: 1rem;
+        padding: 14px 16px;
+      }
 
-/* Share strip */
-.share-strip {
-  margin: 1.25rem 2.5rem;
-  max-width: 910px;
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.6rem 0.9rem;
-  background: var(--surf); border: 1px solid var(--border); border-radius: 8px;
-  font-size: 0.75rem;
-}
-.share-strip-label { color: var(--dim); white-space: nowrap; }
-.share-strip-url {
-  flex: 1; min-width: 0; font-family: monospace; font-size: 0.78rem;
-  color: var(--accent2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.share-copy {
-  background: var(--surf2); border: 1px solid var(--border); color: var(--text);
-  font-size: 0.74rem; padding: 0.25rem 0.65rem; border-radius: 4px;
-  cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif;
-  transition: background 0.15s;
-}
-.share-copy:hover { background: var(--accent); border-color: var(--accent); }
+      input::placeholder {
+        color: #75829a;
+      }
 
-/* Tracklist */
-.track-section {
-  max-width: 960px;
-  padding: 0 2.5rem 5rem;
-}
-.track-section-head {
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 1rem; color: var(--text);
-  letter-spacing: -0.01em;
-  padding: 0 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0.25rem;
-  display: flex; align-items: baseline; gap: 0.6rem;
-}
-.track-count-badge {
-  font-family: 'DM Sans', sans-serif; font-size: 0.75rem;
-  font-weight: 400; color: var(--muted);
-}
+      button {
+        border: 0;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #02160a;
+        font-weight: 700;
+        font-size: 0.96rem;
+        padding: 14px 18px;
+        cursor: pointer;
+      }
 
-.track-row {
-  display: grid;
-  grid-template-columns: 2.5rem 2.5rem 1fr auto;
-  align-items: center; gap: 0.75rem;
-  padding: 0.5rem 0.5rem;
-  border-radius: 6px; cursor: default;
-  transition: background 0.1s;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-.track-row:last-child { border-bottom: none; }
-.track-row:hover { background: rgba(124,106,247,0.07); }
-.track-row:hover .t-num { opacity: 0; }
-.track-row:hover .t-play-icon { opacity: 1; }
+      button:hover {
+        filter: brightness(1.04);
+      }
 
-.t-num {
-  font-size: 0.82rem; color: var(--dim);
-  text-align: right; font-variant-numeric: tabular-nums;
-  font-weight: 300; transition: opacity 0.1s;
-  grid-column: 1;
-}
-.t-play-wrap {
-  grid-column: 1; grid-row: 1;
-  display: flex; align-items: center; justify-content: flex-end;
-}
-.t-play-icon {
-  opacity: 0; transition: opacity 0.1s;
-  color: var(--accent2); pointer-events: none;
-}
+      #status {
+        min-height: 24px;
+        margin-top: 16px;
+        color: var(--muted);
+      }
 
-.t-thumb {
-  width: 38px; height: 38px; border-radius: 3px;
-  object-fit: cover; flex-shrink: 0; background: var(--surf2);
-  grid-column: 2;
-}
-.t-info { min-width: 0; grid-column: 3; }
-.t-name {
-  font-size: 0.875rem; font-weight: 400; color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.t-artist {
-  font-size: 0.78rem; color: var(--muted); font-weight: 300;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.t-dur {
-  font-size: 0.76rem; color: var(--dim);
-  font-variant-numeric: tabular-nums; font-weight: 300;
-  grid-column: 4;
-}
+      #status.error {
+        color: var(--danger);
+      }
 
-/* Skeleton */
-.skel {
-  background: linear-gradient(90deg, var(--surf) 25%, var(--surf2) 50%, var(--surf) 75%);
-  background-size: 200% 100%;
-  animation: skel-move 1.5s infinite; border-radius: 4px;
-}
-@keyframes skel-move {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-.load-wrap {
-  padding: 3rem 2.5rem; display: flex; gap: 2rem; align-items: flex-end;
-}
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 22px 0 0;
+      }
 
-/* Error */
-.err-view { display: none; padding: 5rem 2rem; text-align: center; }
-.err-view .ico { font-size: 2.5rem; margin-bottom: 1rem; }
-.err-view h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
-.err-view p { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.5rem; font-weight: 300; }
+      li {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+      }
 
-/* No-auth notice */
-.noauth-notice {
-  margin: 0 2.5rem 1.5rem;
-  max-width: 910px;
-  background: rgba(124,106,247,0.08);
-  border: 1px solid rgba(124,106,247,0.2);
-  border-radius: 8px; padding: 0.75rem 1rem;
-  font-size: 0.8rem; color: var(--muted);
-  display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5;
-}
-.noauth-notice svg { flex-shrink: 0; margin-top: 1px; color: var(--accent); }
+      .song-name {
+        display: block;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
 
-@media (max-width: 600px) {
-  .pv-hero { flex-direction: column; align-items: flex-start; padding: 2rem 1.25rem 1.5rem; gap: 1.5rem; }
-  .pv-art, .pv-art-placeholder { width: 140px; height: 140px; }
-  .pv-title { font-size: 1.8rem; }
-  .share-strip { margin-left: 1.25rem; margin-right: 1.25rem; }
-  .track-section { padding-left: 1.25rem; padding-right: 1.25rem; }
-  .topbar { padding: 0 1.25rem; }
-  .load-wrap { padding: 2rem 1.25rem; }
-  .noauth-notice { margin-left: 1.25rem; margin-right: 1.25rem; }
-}
-@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
-</style>
-</head>
-<body>
+      .song-artists {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
 
-<!-- ══ HOME ══════════════════════════════════════════════════════════════════ -->
-<div id="page-home">
-  <div class="home-wrap">
-    <div class="home-glow"></div>
-    <div class="home-inner">
-      <div class="home-logo">lodfy<sup>beta</sup></div>
-      <div class="home-tagline">a better way to share playlists</div>
-      <div class="paste-zone">
-        <div class="paste-label">Paste a Spotify playlist link</div>
-        <div class="paste-row">
-          <input class="paste-input" id="playlist-input" type="url"
-            placeholder="https://open.spotify.com/playlist/…"
-            autocomplete="off" spellcheck="false"/>
-          <button class="view-btn" onclick="handleGo()">View</button>
-        </div>
-        <div class="err" id="err-msg">That doesn't look like a Spotify playlist link.</div>
-        <div class="paste-hint">On Spotify: Share → Copy link to playlist, then paste above.</div>
+      .note {
+        margin-top: 20px;
+        font-size: 0.84rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Lodfy</h1>
+      <p>Paste a Spotify playlist link to view the songs in it.</p>
+
+      <form id="playlistForm">
+        <input
+          id="playlistUrl"
+          type="text"
+          placeholder="https://open.spotify.com/playlist/..."
+          autocomplete="off"
+          spellcheck="false"
+          required
+        />
+        <button type="submit">Find songs</button>
+      </form>
+
+      <div id="status">Waiting for a playlist link.</div>
+      <ul id="songList"></ul>
+
+      <div class="note">
+        The Spotify client ID and secret stay on the server, not in the browser.
       </div>
-    </div>
-  </div>
-</div>
+    </main>
 
-<!-- ══ VIEW ══════════════════════════════════════════════════════════════════ -->
-<div id="page-view">
-  <div class="art-backdrop" id="art-backdrop"></div>
-  <div class="view-scroll">
+    <script>
+      const form = document.getElementById('playlistForm');
+      const input = document.getElementById('playlistUrl');
+      const status = document.getElementById('status');
+      const songList = document.getElementById('songList');
 
-    <div class="topbar">
-      <div class="tbar-logo">lodfy</div>
-      <button class="tbar-back" onclick="goHome()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        Back
-      </button>
-    </div>
+      function extractPlaylistId(value) {
+        if (!value) return null;
 
-    <!-- Loading -->
-    <div id="pv-load" class="load-wrap">
-      <div class="skel" style="width:200px;height:200px;border-radius:6px;flex-shrink:0"></div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:0.75rem;padding-bottom:0.5rem">
-        <div class="skel" style="height:12px;width:60px"></div>
-        <div class="skel" style="height:48px;width:65%"></div>
-        <div class="skel" style="height:12px;width:38%"></div>
-        <div style="display:flex;gap:0.6rem;margin-top:0.5rem">
-          <div class="skel" style="height:36px;width:130px"></div>
-          <div class="skel" style="height:36px;width:100px"></div>
-        </div>
-      </div>
-    </div>
+        const match = value.match(/playlist\/([A-Za-z0-9]+)/i);
+        if (match) return match[1];
 
-    <!-- Content -->
-    <div id="pv-content" style="display:none">
-      <div class="pv-hero">
-        <div style="flex-shrink:0">
-          <img id="pv-art" class="pv-art" src="" alt=""
-            onerror="this.style.display='none';document.getElementById('pv-art-ph').style.display='flex'">
-          <div id="pv-art-ph" class="pv-art-placeholder" style="display:none">
-            <svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor" opacity=".25"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-          </div>
-        </div>
-        <div class="pv-info">
-          <div class="pv-kind">Playlist</div>
-          <div class="pv-title" id="pv-title">—</div>
-          <div class="pv-by" id="pv-by">—</div>
-          <div class="pv-desc" id="pv-desc" style="display:none"></div>
-          <div class="pv-stats" id="pv-stats" style="display:none">
-            <div class="pv-stat">
-              <span class="pv-stat-val" id="stat-tracks">—</span>
-              <span class="pv-stat-label">tracks</span>
-            </div>
-            <div class="pv-stat" id="stat-dur-wrap" style="display:none">
-              <span class="pv-stat-val" id="stat-dur">—</span>
-              <span class="pv-stat-label">total time</span>
-            </div>
-          </div>
-          <div class="pv-actions">
-            <a id="pv-open-btn" href="#" target="_blank" rel="noopener" class="btn-primary">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-              Open in Spotify
-            </a>
-            <button class="btn-ghost" onclick="copyShareUrl()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              <span id="share-btn-label">Copy link</span>
-            </button>
-          </div>
-        </div>
-      </div>
+        const direct = value.match(/^([A-Za-z0-9]{22})$/);
+        if (direct) return direct[1];
 
-      <!-- Share strip -->
-      <div class="share-strip">
-        <span class="share-strip-label">Your link</span>
-        <span class="share-strip-url" id="share-url-text"></span>
-        <button class="share-copy" id="share-copy-btn" onclick="copyShareUrl()">Copy</button>
-      </div>
+        return null;
+      }
 
-      <!-- No Spotify API key notice -->
-      <div class="noauth-notice" id="noauth-notice" style="display:none">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Track details need a Spotify API key. Add one in the source code to unlock full track listing with names, artists, and durations.
-      </div>
+      function setStatus(message, isError = false) {
+        status.textContent = message;
+        status.classList.toggle('error', isError);
+      }
 
-      <!-- Track list -->
-      <div class="track-section">
-        <div class="track-section-head">
-          Tracks <span class="track-count-badge" id="track-count-badge"></span>
-        </div>
-        <div id="track-rows"></div>
-      </div>
-    </div>
+      function renderSongs(songs) {
+        songList.innerHTML = '';
 
-    <!-- Error -->
-    <div id="pv-error" class="err-view">
-      <div class="ico">🎵</div>
-      <h2>Couldn't load this playlist</h2>
-      <p id="pv-err-text">The playlist may be private or the link is invalid.</p>
-      <button class="btn-ghost" onclick="goHome()">Try another playlist</button>
-    </div>
+        if (!songs || songs.length === 0) {
+          const li = document.createElement('li');
+          li.textContent = 'No songs found in this playlist.';
+          songList.appendChild(li);
+          return;
+        }
 
-  </div>
-</div>
+        songs.forEach((song, index) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span class="song-name">${index + 1}. ${song.name}</span>
+            <span class="song-artists">${song.artists}</span>
+          `;
+          songList.appendChild(li);
+        });
+      }
 
-<script>
-// ─────────────────────────────────────────────────
-//  SPOTIFY API KEY (optional)
-//  Get one free at https://developer.spotify.com
-//  Set client_id + client_secret below to unlock
-//  full track listing with names, artists, durations
-// ─────────────────────────────────────────────────
-const SPOTIFY_CLIENT_ID     = '13b014ad04684dfdbac29b67e2c75ebc';   // e.g. 'abc123def456'
-const SPOTIFY_CLIENT_SECRET = 'c4d041be16ef4950b4de0fa8e6ee0bf5';   // e.g. 'xyz789uvw012'
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-// ── ROUTING ──────────────────────────────────────
-function init() {
-  const hash = location.hash;
-  const path = location.pathname;
-  let id = null;
-  if (hash.startsWith('#/view/')) id = hash.replace('#/view/','').split('?')[0];
-  else if (path.includes('/view/')) id = path.split('/view/')[1].split('?')[0];
-  if (id && id.length > 5) showView(id);
-  else showHome();
-}
-window.addEventListener('hashchange', init);
-window.addEventListener('popstate', init);
+        const playlistUrl = input.value.trim();
+        const playlistId = extractPlaylistId(playlistUrl);
 
-function basePath() {
-  if (location.hostname === 'therealdev123.github.io') return '/lodfy/';
-  return location.pathname.split('/view/')[0].replace(/\/$/, '') + '/';
-}
-function viewUrl(id) {
-  if (location.hostname === 'therealdev123.github.io') return `/lodfy/view/${id}`;
-  return basePath().replace(/\/$/, '') + `#/view/${id}`;
-}
-function shareUrl(id) {
-  if (location.hostname === 'therealdev123.github.io')
-    return `https://therealdev123.github.io/lodfy/view/${id}`;
-  return location.origin + basePath().replace(/\/$/, '') + `#/view/${id}`;
-}
+        if (!playlistId) {
+          setStatus('Please paste a valid Spotify playlist link.', true);
+          songList.innerHTML = '';
+          return;
+        }
 
-function showHome() {
-  document.getElementById('page-home').style.display = 'block';
-  document.getElementById('page-view').style.display = 'none';
-  document.title = 'Lodfy';
-}
-function showView(id) {
-  document.getElementById('page-home').style.display = 'none';
-  document.getElementById('page-view').style.display = 'block';
-  loadPlaylist(id);
-}
-function goHome() {
-  history.pushState({}, '', basePath());
-  showHome();
-}
+        setStatus('Loading songs...');
 
-// ── INPUT ─────────────────────────────────────────
-document.getElementById('playlist-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleGo();
-});
-function handleGo() {
-  const raw = document.getElementById('playlist-input').value.trim();
-  const id = extractId(raw);
-  const err = document.getElementById('err-msg');
-  if (!id) { err.classList.add('on'); return; }
-  err.classList.remove('on');
-  history.pushState({}, '', viewUrl(id));
-  showView(id);
-}
-function extractId(s) {
-  const m1 = s.match(/spotify\.com\/playlist\/([A-Za-z0-9]+)/);
-  if (m1) return m1[1];
-  const m2 = s.match(/spotify:playlist:([A-Za-z0-9]+)/);
-  if (m2) return m2[1];
-  if (/^[A-Za-z0-9]{22}$/.test(s)) return s;
-  return null;
-}
+        try {
+          const response = await fetch('/api/playlist-songs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ playlistId })
+          });
 
-// ── SPOTIFY AUTH TOKEN ────────────────────────────
-let _token = null;
-async function getToken() {
-  if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) return null;
-  if (_token) return _token;
-  try {
-    const r = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa(SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET)
-      },
-      body: 'grant_type=client_credentials'
-    });
-    const d = await r.json();
-    _token = d.access_token;
-    return _token;
-  } catch { return null; }
-}
+          const data = await response.json();
 
-// ── LOAD PLAYLIST ─────────────────────────────────
-let currentId = null;
+          if (!response.ok) {
+            throw new Error(data.error || 'Could not load playlist.');
+          }
 
-async function loadPlaylist(id) {
-  currentId = id;
-  document.getElementById('pv-load').style.display = 'flex';
-  document.getElementById('pv-content').style.display = 'none';
-  document.getElementById('pv-error').style.display = 'none';
-  document.getElementById('art-backdrop').style.backgroundImage = '';
-
-  try {
-    // Always fetch oEmbed for cover art + title (no auth needed)
-    const oembed = await fetchOEmbed(id);
-
-    // Try Spotify API for full track data if we have credentials
-    const token = await getToken();
-    let playlistData = null;
-    if (token) {
-      try { playlistData = await fetchSpotifyPlaylist(id, token); } catch(_) {}
-    }
-
-    render(id, oembed, playlistData);
-  } catch(e) {
-    document.getElementById('pv-load').style.display = 'none';
-    document.getElementById('pv-err-text').textContent = e.message;
-    document.getElementById('pv-error').style.display = 'block';
-  }
-}
-
-async function fetchOEmbed(id) {
-  const url = `https://open.spotify.com/oembed?url=${encodeURIComponent('https://open.spotify.com/playlist/'+id)}`;
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(`Playlist not found or is private (${r.status})`);
-  return r.json();
-}
-
-async function fetchSpotifyPlaylist(id, token) {
-  const r = await fetch(`https://api.spotify.com/v1/playlists/${id}?fields=name,description,followers,tracks.items(track(name,duration_ms,artists,album(images)))`, {
-    headers: { 'Authorization': 'Bearer ' + token }
-  });
-  if (!r.ok) throw new Error('API error');
-  return r.json();
-}
-
-// ── RENDER ────────────────────────────────────────
-function render(id, oembed, playlist) {
-  const name  = playlist ? playlist.name : (oembed.title || 'Playlist');
-  const thumb = oembed.thumbnail_url || '';
-
-  // Backdrop
-  if (thumb) document.getElementById('art-backdrop').style.backgroundImage = `url(${thumb})`;
-
-  // Art
-  if (thumb) {
-    document.getElementById('pv-art').src = thumb;
-    document.getElementById('pv-art').style.display = 'block';
-    document.getElementById('pv-art-ph').style.display = 'none';
-  } else {
-    document.getElementById('pv-art').style.display = 'none';
-    document.getElementById('pv-art-ph').style.display = 'flex';
-  }
-
-  document.getElementById('pv-title').textContent = name;
-  document.title = name + ' — Lodfy';
-
-  // Owner / description
-  if (playlist) {
-    document.getElementById('pv-by').textContent = 'Spotify Playlist';
-    if (playlist.description) {
-      const d = document.getElementById('pv-desc');
-      d.textContent = stripHtml(playlist.description);
-      d.style.display = 'block';
-    }
-    // Stats
-    const tracks = playlist.tracks?.items?.filter(i => i.track)?.length || 0;
-    document.getElementById('stat-tracks').textContent = tracks;
-    document.getElementById('pv-stats').style.display = 'flex';
-
-    const totalMs = playlist.tracks?.items?.reduce((sum, i) => sum + (i.track?.duration_ms || 0), 0) || 0;
-    if (totalMs > 0) {
-      document.getElementById('stat-dur').textContent = fmtDuration(totalMs);
-      document.getElementById('stat-dur-wrap').style.display = 'flex';
-    }
-  } else {
-    document.getElementById('pv-by').textContent = 'Spotify Playlist';
-  }
-
-  // Spotify link
-  document.getElementById('pv-open-btn').href = `https://open.spotify.com/playlist/${id}`;
-
-  // Share URL
-  document.getElementById('share-url-text').textContent = shareUrl(id);
-
-  // Track rows
-  if (playlist && playlist.tracks?.items?.length) {
-    renderTracks(playlist.tracks.items);
-    document.getElementById('noauth-notice').style.display = 'none';
-    document.getElementById('track-count-badge').textContent =
-      playlist.tracks.items.filter(i => i.track).length + ' songs';
-  } else {
-    document.getElementById('noauth-notice').style.display = 'flex';
-    document.getElementById('track-rows').innerHTML = renderSkeletonTracks(8);
-    document.getElementById('track-count-badge').textContent = '';
-  }
-
-  document.getElementById('pv-load').style.display = 'none';
-  document.getElementById('pv-content').style.display = 'block';
-}
-
-function renderTracks(items) {
-  const valid = items.filter(i => i.track);
-  document.getElementById('track-count-badge').textContent = valid.length + ' songs';
-  const html = valid.map((item, idx) => {
-    const t = item.track;
-    const img = t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '';
-    const artists = t.artists?.map(a => a.name).join(', ') || '—';
-    const dur = fmtMs(t.duration_ms || 0);
-    return `
-      <div class="track-row">
-        <div style="grid-column:1;grid-row:1;display:flex;align-items:center;justify-content:flex-end">
-          <span class="t-num">${idx + 1}</span>
-          <span class="t-play-icon" style="position:absolute">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </span>
-        </div>
-        ${img ? `<img class="t-thumb" src="${img}" alt="" loading="lazy">` : `<div class="t-thumb" style="background:var(--surf2)"></div>`}
-        <div class="t-info">
-          <div class="t-name">${esc(t.name)}</div>
-          <div class="t-artist">${esc(artists)}</div>
-        </div>
-        <div class="t-dur">${dur}</div>
-      </div>`;
-  }).join('');
-  document.getElementById('track-rows').innerHTML = html;
-}
-
-function renderSkeletonTracks(n) {
-  return Array.from({length: n}, (_, i) => `
-    <div class="track-row">
-      <span class="t-num" style="color:var(--dim)">${i+1}</span>
-      <div class="t-thumb skel"></div>
-      <div class="t-info">
-        <div class="skel" style="height:13px;width:${55+Math.random()*30}%;margin-bottom:5px;border-radius:3px"></div>
-        <div class="skel" style="height:11px;width:${25+Math.random()*20}%;border-radius:3px"></div>
-      </div>
-      <div class="t-dur skel" style="width:32px;height:12px;border-radius:3px"></div>
-    </div>`).join('');
-}
-
-// ── UTILS ─────────────────────────────────────────
-function fmtMs(ms) {
-  const s = Math.floor(ms / 1000);
-  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-}
-function fmtDuration(ms) {
-  const m = Math.floor(ms / 60000);
-  if (m < 60) return `${m} min`;
-  return `${Math.floor(m/60)} hr ${m%60} min`;
-}
-function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function stripHtml(s) {
-  return s.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&#x27;/g,"'").replace(/&quot;/g,'"');
-}
-function copyShareUrl() {
-  const url = document.getElementById('share-url-text').textContent;
-  navigator.clipboard.writeText(url).then(() => {
-    document.getElementById('share-btn-label').textContent = 'Copied!';
-    document.getElementById('share-copy-btn').textContent = 'Copied!';
-    setTimeout(() => {
-      document.getElementById('share-btn-label').textContent = 'Copy link';
-      document.getElementById('share-copy-btn').textContent = 'Copy';
-    }, 2000);
-  });
-}
-
-init();
-</script>
-</body>
+          renderSongs(data.songs);
+          setStatus(`Found ${data.songs.length} songs.`);
+        } catch (error) {
+          setStatus(error.message || 'Something went wrong.', true);
+          songList.innerHTML = '';
+        }
+      });
+    </script>
+  </body>
 </html>
