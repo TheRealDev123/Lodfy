@@ -3,236 +3,148 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lodfy</title>
+    <title>Lodfy — Spotify Playlist Viewer</title>
     <style>
       :root {
+        color-scheme: dark;
         --bg: #0b0d12;
         --panel: #121821;
-        --panel-2: #1a2330;
         --border: #2a3747;
         --text: #edf2ff;
         --muted: #aab7c8;
         --accent: #1db954;
-        --accent-2: #4cd684;
-        --danger: #ff7a7a;
+        --danger: #ff8585;
       }
 
       * { box-sizing: border-box; }
-      html, body {
-        margin: 0;
-        min-height: 100%;
-        font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(180deg, var(--bg), #0f1219 100%);
-        color: var(--text);
-      }
-
+      html, body { min-height: 100%; }
       body {
+        margin: 0;
         min-height: 100vh;
         display: grid;
         place-items: center;
         padding: 24px;
+        background: linear-gradient(180deg, var(--bg), #0f1219);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
       }
 
-      .card {
-        width: min(720px, 100%);
-        background: rgba(18, 24, 33, 0.9);
+      main {
+        width: min(760px, 100%);
+        padding: clamp(22px, 5vw, 36px);
         border: 1px solid var(--border);
         border-radius: 20px;
-        box-shadow: 0 22px 60px rgba(0,0,0,0.35);
-        padding: 28px;
+        background: rgba(18, 24, 33, 0.94);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
       }
 
-      h1 {
-        margin: 0 0 10px;
-        font-size: clamp(2rem, 5vw, 2.7rem);
-      }
-
-      p {
-        color: var(--muted);
-        margin: 0 0 18px;
-      }
-
-      form {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 18px;
-      }
-
+      h1 { margin: 0 0 10px; font-size: clamp(2rem, 5vw, 2.7rem); }
+      p { color: var(--muted); line-height: 1.5; }
+      form { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
       input {
         flex: 1 1 320px;
         min-width: 0;
+        padding: 14px 16px;
         border: 1px solid var(--border);
         border-radius: 12px;
         background: #0d131b;
         color: var(--text);
         font-size: 1rem;
-        padding: 14px 16px;
       }
-
-      input::placeholder {
-        color: #75829a;
-      }
-
+      input::placeholder { color: #75829a; }
+      input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
       button {
+        padding: 14px 18px;
         border: 0;
         border-radius: 12px;
-        background: linear-gradient(135deg, var(--accent), var(--accent-2));
-        color: #02160a;
-        font-weight: 700;
+        background: var(--accent);
+        color: #04150a;
         font-size: 0.96rem;
-        padding: 14px 18px;
+        font-weight: 700;
         cursor: pointer;
       }
-
-      button:hover {
-        filter: brightness(1.04);
-      }
-
-      #status {
-        min-height: 24px;
-        margin-top: 16px;
-        color: var(--muted);
-      }
-
-      #status.error {
-        color: var(--danger);
-      }
-
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: 22px 0 0;
-      }
-
-      li {
-        background: rgba(255,255,255,0.02);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 14px 16px;
-        margin-bottom: 10px;
-      }
-
-      .song-name {
-        display: block;
-        font-size: 1rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-      }
-
-      .song-artists {
-        color: var(--muted);
-        font-size: 0.92rem;
-      }
-
-      .note {
-        margin-top: 20px;
-        font-size: 0.84rem;
-        color: var(--muted);
+      button:hover { filter: brightness(1.08); }
+      #status { min-height: 24px; margin: 16px 0; color: var(--muted); }
+      #status.error { color: var(--danger); }
+      .embed-wrap { display: none; overflow: hidden; border-radius: 12px; }
+      .embed-wrap.visible { display: block; }
+      iframe { display: block; width: 100%; height: 500px; border: 0; border-radius: 12px; }
+      .note { margin: 16px 0 0; font-size: 0.84rem; }
+      @media (max-width: 560px) {
+        body { padding: 14px; }
+        form button { width: 100%; }
+        iframe { height: 500px; }
       }
     </style>
   </head>
   <body>
-    <main class="card">
+    <main>
       <h1>Lodfy</h1>
-      <p>Paste a Spotify playlist link to view the songs in it.</p>
+      <p>Paste a Spotify playlist link to view and play its songs. No Spotify client credentials or browser-side API calls are needed.</p>
 
       <form id="playlistForm">
         <input
           id="playlistUrl"
-          type="text"
+          type="url"
           placeholder="https://open.spotify.com/playlist/..."
-          autocomplete="off"
+          autocomplete="url"
           spellcheck="false"
+          aria-label="Spotify playlist link"
           required
         />
         <button type="submit">Find songs</button>
       </form>
 
-      <div id="status">Waiting for a playlist link.</div>
-      <ul id="songList"></ul>
-
-      <div class="note">
-        The Spotify client ID and secret stay on the server, not in the browser.
+      <div id="status" role="status" aria-live="polite">Enter a playlist link to get started.</div>
+      <div id="embedWrap" class="embed-wrap">
+        <iframe
+          id="playlistEmbed"
+          title="Spotify playlist and track list"
+          loading="lazy"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
       </div>
+      <p class="note">The playlist is displayed using Spotify’s official embed. Private playlists may not be available.</p>
     </main>
 
     <script>
       const form = document.getElementById('playlistForm');
       const input = document.getElementById('playlistUrl');
       const status = document.getElementById('status');
-      const songList = document.getElementById('songList');
+      const embedWrap = document.getElementById('embedWrap');
+      const playlistEmbed = document.getElementById('playlistEmbed');
 
       function extractPlaylistId(value) {
-        if (!value) return null;
-
-        const match = value.match(/playlist\/([A-Za-z0-9]+)/i);
-        if (match) return match[1];
-
-        const direct = value.match(/^([A-Za-z0-9]{22})$/);
-        if (direct) return direct[1];
-
-        return null;
-      }
-
-      function setStatus(message, isError = false) {
-        status.textContent = message;
-        status.classList.toggle('error', isError);
-      }
-
-      function renderSongs(songs) {
-        songList.innerHTML = '';
-
-        if (!songs || songs.length === 0) {
-          const li = document.createElement('li');
-          li.textContent = 'No songs found in this playlist.';
-          songList.appendChild(li);
-          return;
+        try {
+          const url = new URL(value);
+          if (!['open.spotify.com', 'www.open.spotify.com'].includes(url.hostname)) return null;
+          const parts = url.pathname.split('/').filter(Boolean);
+          const playlistIndex = parts.indexOf('playlist');
+          const id = playlistIndex >= 0 ? parts[playlistIndex + 1] : null;
+          return id && /^[A-Za-z0-9]{22}$/.test(id) ? id : null;
+        } catch {
+          return null;
         }
-
-        songs.forEach((song, index) => {
-          const li = document.createElement('li');
-          li.innerHTML = `
-            <span class="song-name">${index + 1}. ${song.name}</span>
-            <span class="song-artists">${song.artists}</span>
-          `;
-          songList.appendChild(li);
-        });
       }
 
-      form.addEventListener('submit', async (event) => {
+      form.addEventListener('submit', (event) => {
         event.preventDefault();
-
-        const playlistUrl = input.value.trim();
-        const playlistId = extractPlaylistId(playlistUrl);
+        const playlistId = extractPlaylistId(input.value.trim());
 
         if (!playlistId) {
-          setStatus('Please paste a valid Spotify playlist link.', true);
-          songList.innerHTML = '';
+          embedWrap.classList.remove('visible');
+          playlistEmbed.removeAttribute('src');
+          status.textContent = 'Please enter a valid Spotify playlist URL.';
+          status.classList.add('error');
           return;
         }
 
-        setStatus('Loading songs...');
-
-        try {
-          const response = await fetch('/api/playlist-songs', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playlistId })
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.error || 'Could not load playlist.');
-          }
-
-          renderSongs(data.songs);
-          setStatus(`Found ${data.songs.length} songs.`);
-        } catch (error) {
-          setStatus(error.message || 'Something went wrong.', true);
-          songList.innerHTML = '';
-        }
+        status.classList.remove('error');
+        status.textContent = 'Loading playlist…';
+        playlistEmbed.src = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
+        embedWrap.classList.add('visible');
+        status.textContent = 'Playlist loaded. Its songs are listed in the Spotify player below.';
       });
     </script>
   </body>
